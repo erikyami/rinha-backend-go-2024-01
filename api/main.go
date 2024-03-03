@@ -16,6 +16,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	fmt.Printf("Escutando na porta %d\n", config.API_PORT)
 	rota.HandleFunc("/clientes/{id}/transacoes", insereTransacao(db)).Methods("POST")
 	rota.HandleFunc("/clientes/{id}/extrato", getExtrato(db)).Methods("GET")
+	rota.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.API_PORT), rota))
 
 }
